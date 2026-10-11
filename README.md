@@ -50,45 +50,6 @@ Aplicația se va deschide automat în browser la adresa: **`http://localhost:850
 - `pandas>=2.0.0` (Manipulare date și tabele)
 - `plotly>=5.18.0` (Grafice interactive)
 
----
-
-## 👥 Cum este Împărțit Proiectul (Arhitectură & Roluri)
-
-Aplicația este construită pe o **arhitectură complet modulară**.  
-Fiecare tab principal are un fișier Python dedicat în folderul `sections/`, astfel încât **fiecare membru al echipei își poate adăuga partea fără a crea conflicte de merge (`merge conflicts`) cu ceilalți**.
-
-| Tab în Aplicație | Fișier Sursă | Responsabili | Rol Asignat |
-| :--- | :--- | :--- | :--- |
-| 📌 **Problem Framing** | `sections/problem_framing.py` | Hermeneanu Ionuț Silviu | *Problem Framer* |
-| 🔬 **Methodology** | `sections/methodology.py` | Leahu Teodor Filip & Szocs Luca | *Methodology Experts* |
-| 💻 **Code (Classic Attention)** | `sections/code/classic_attention/` | Cuclea Luca-Nicolae & Gheorghe Bogdan-Alexandru | *Coders* |
-| 🌊 **Code (Other Attention / SWA)**| `sections/code/other_attention/` | Cuclea Luca-Nicolae & Gheorghe Bogdan-Alexandru | *Coders* |
-| 📊 **Results & Analysis** | `sections/results.py` | Gusev Roman | *Results Interpreter & Challenger* |
-| 🎛️ **Main Orchestrator** | `main.py` | Luca Cuclea / Întreaga echipă | *Entrypoint & Navigation Layout* |
-
----
-
-## 🛠️ Cum Contribui (Ghid pentru Membrii Echipei)
-
-Fiecare membru trebuie să modifice **doar fișierul asociat secțiunii sale**:
-
-1. **Pentru Problem Framing (`sections/problem_framing.py`):**
-   - Modifică funcția `render_problem_framing()`.
-   - Poți adăuga text formatat (`st.markdown`), formule LaTeX (`st.latex`), imagini (`st.image`) sau callout-uri (`st.info`, `st.warning`).
-
-2. **Pentru Methodology (`sections/methodology.py`):**
-   - Modifică funcția `render_methodology()`.
-   - Adaugă detaliile arhitecturale (Encoder-Decoder, Positional Encoding, Multi-Head Attention equations etc.).
-
-3. **Pentru Results (`sections/results.py`):**
-   - Modifică funcția `render_results()`.
-   - Adaugă grafice (Plotly / Streamlit native), tabele de scoruri BLEU, comparații de complexitate O(N) vs O(N²), analize critice.
-
-4. **Pentru Code (`sections/code/...`):**
-   - Cod modular pentru demonstrații interactive, shape tracking, winograd schema etc.
-
----
-
 ## 🌿 Workflow Recomandat pe Git
 
 Pentru a colabora fără bătăi de cap:
