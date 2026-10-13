@@ -25,6 +25,7 @@ from sections.code.classic_attention.code_paradigms import render_code_paradigms
 from sections.code.classic_attention.scaled_dot import render_scaled_dot
 from sections.code.classic_attention.winograd import render_winograd
 from sections.code.classic_attention.shape_inspector import render_shape_inspector
+from sections.code.classic_attention.bertviz_view import render_bertviz_view
 
 from sections.code.other_attention.sliding_window import render_sliding_window
 
@@ -106,11 +107,12 @@ with main_code:
     # NIVEL 3: SUB-SUBMENIURI SUB CLASSIC ATTENTION
     # --------------------------------------------------------------------------
     with sub_classic:
-        tab_paradigms, tab_scaled, tab_winograd, tab_shapes = st.tabs([
+        tab_paradigms, tab_scaled, tab_winograd, tab_shapes, tab_bertviz = st.tabs([
             "💻 Code Comparison: 3 Paradigms",
             "⚡ Scaled Dot-Product & Saturation",
             "🧠 Winograd Schema & Cognition",
-            "🛠️ PyTorch Shape Inspector"
+            "🛠️ PyTorch Shape Inspector",
+            "🔍 BertViz Multiscale Explorer"
         ])
         
         with tab_paradigms:
@@ -124,6 +126,9 @@ with main_code:
             
         with tab_shapes:
             render_shape_inspector()
+
+        with tab_bertviz:
+            render_bertviz_view()
 
     # --------------------------------------------------------------------------
     # NIVEL 3: OTHER TYPES OF ATTENTION (SLIDING WINDOW & SINKS)
