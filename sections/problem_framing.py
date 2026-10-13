@@ -15,7 +15,7 @@ import pandas as pd
 import plotly.graph_objects as go
 import streamlit as st
 
-DEFAULT_SENTENCE = "The animal didn't cross the street because it was too tired"
+DEFAULT_SENTENCE: str = "The animal didn't cross the street because it was too tired"
 MAX_TOKENS = 16
 
 # Chip colours: done / active / waiting / out of reach
