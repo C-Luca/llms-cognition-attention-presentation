@@ -1,71 +1,73 @@
 # 🧠 Transformer & SWA Interactive Lab
 > **LLMs & Cognition 2026** • FMI UniBuc  
-> Aplicație interactivă Streamlit pentru prezentarea articolelor:
+> Interactive Streamlit application for presenting the papers:
 > 1. *"Attention Is All You Need"* (Vaswani et al., 2017)
 > 2. *"Sliding-Window Beats Linear Attention"* (Jolicoeur-Martineau et al., 2026)
 
 ---
 
-## 🚀 Pornire Rapidă (Quick Start)
+## 🚀 Quick Start
 
-### 1. Clonare Repository
+### 1. Clone the Repository
 ```bash
-git clone <URL_REPOSITORY_GITHUB>
-cd presentation_app
+git clone https://github.com/C-Luca/llms-cognition-attention-presentation.git
+cd llms-cognition-attention-presentation
 ```
 
-### 2. Creare și Activare Mediu Virtual (Recomandat)
+### 2. Create and Activate a Virtual Environment (Recommended)
 
-- **Pe Windows (PowerShell):**
+- **On Windows (PowerShell):**
   ```powershell
   python -m venv venv
   .\venv\Scripts\Activate.ps1
   ```
-  *(Dacă PowerShell blochează rularea de scripturi, rulează o singură dată: `Set-ExecutionPolicy -Scope Process -ExecutionPolicy Bypass`)*
+  *(If PowerShell restricts running scripts, run once: `Set-ExecutionPolicy -Scope Process -ExecutionPolicy Bypass`)*
 
-- **Pe Linux / macOS:**
+- **On Linux / macOS:**
   ```bash
   python3 -m venv venv
   source venv/bin/activate
   ```
 
-### 3. Instalare Dependințe
+### 3. Install Dependencies
 ```bash
 pip install -r requirements.txt
 ```
 
-### 4. Lansare Aplicație
+### 4. Launch the Application
 ```bash
 streamlit run main.py
 ```
-Aplicația se va deschide automat în browser la adresa: **`http://localhost:8501`**.
+The application will automatically open in your browser at: **`http://localhost:8501`**.
 
 ---
 
-## 📦 Dependințe (`requirements.txt`)
+## 📦 Dependencies (`requirements.txt`)
 
-- `streamlit>=1.30.0` (Interfața web interactivă)
-- `torch>=2.0.0` (Calcule tensoriale și Shape Inspector)
-- `numpy>=1.24.0` (Operații numerice și simulări)
-- `pandas>=2.0.0` (Manipulare date și tabele)
-- `plotly>=5.18.0` (Grafice interactive)
+- `streamlit>=1.30.0` (Interactive web UI)
+- `torch>=2.0.0` (Tensor operations & Shape Inspector)
+- `numpy>=1.24.0` (Numerical computing & simulations)
+- `pandas>=2.0.0` (Data manipulation & tabular views)
+- `plotly>=5.18.0` (Interactive visualizations & plots)
 
-## 🌿 Workflow Recomandat pe Git
+---
 
-Pentru a colabora fără bătăi de cap:
+## 🌿 Recommended Git Workflow
 
-1. **Actualizează codul înainte de a începe să lucrezi:**
+To collaborate smoothly with team members:
+
+1. **Pull the latest changes before starting work:**
    ```bash
    git pull origin main
    ```
-2. **(Opțional dar recomandat) Lucrează pe un branch separat:**
+2. **(Optional but recommended) Work on a dedicated branch:**
    ```bash
-   git checkout -b feature/numele-tau
+   git checkout -b feature/your-name
    ```
-3. **După ce ai adăugat modificările și ai testat cu `streamlit run main.py`:**
+3. **After adding changes and testing locally with `streamlit run main.py`:**
    ```bash
    git add .
-   git commit -m "Add: descriere scurta a modificarilor"
-   git push origin feature/numele-tau
+   git commit -m "Add: brief description of your changes"
+   git push origin feature/your-name
    ```
-4. **Deschide un Pull Request (PR) pe GitHub** sau dă merge în `main` dacă lucrați direct pe main.
+4. **Open a Pull Request (PR) on GitHub** or merge into `main` if collaborating directly on main.
