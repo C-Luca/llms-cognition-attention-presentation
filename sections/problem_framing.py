@@ -1,10 +1,10 @@
 """
 ========================================================================================
-Modul: Problem Framing
-Responsabil: Hermeneanu Ionuț Silviu (Problem Framer)
+Module: Problem Framing
+Author: Hermeneanu Ionuț Silviu (Problem Framer)
 ========================================================================================
-Acest fișier este complet izolat. Orice modificări făcute aici vor apărea
-în tabul 'Problem Framing' fără a afecta celelalte secțiuni.
+This file is fully isolated. Any changes made here appear in the
+'Problem Framing' tab without affecting the other sections.
 ========================================================================================
 """
 
