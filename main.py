@@ -78,21 +78,21 @@ with main_pf:
     try:
         render_problem_framing()
     except Exception as e:
-        st.error(f"Eroare în modulul Problem Framing: {e}")
+        st.error(f"Error in Problem Framing module: {e}")
 
 # 2. Methodology (Teodor & Luca Szocs)
 with main_me:
     try:
         render_methodology()
     except Exception as e:
-        st.error(f"Eroare în modulul Methodology: {e}")
+        st.error(f"Error in Methodology module: {e}")
 
 # 4. Results (Roman)
 with main_res:
     try:
         render_results()
     except Exception as e:
-        st.error(f"Eroare în modulul Results: {e}")
+        st.error(f"Error in Results module: {e}")
 
 # 3. Code (Cuclea Luca & Bogdan)
 with main_code:
@@ -107,9 +107,9 @@ with main_code:
     # --------------------------------------------------------------------------
     with sub_classic:
         tab_paradigms, tab_scaled, tab_winograd, tab_shapes = st.tabs([
-            "💻 Comparație de Cod: 3 Paradigme",
+            "💻 Code Comparison: 3 Paradigms",
             "⚡ Scaled Dot-Product & Saturation",
-            "🧠 Winograd Schema & Cogniție",
+            "🧠 Winograd Schema & Cognition",
             "🛠️ PyTorch Shape Inspector"
         ])
         

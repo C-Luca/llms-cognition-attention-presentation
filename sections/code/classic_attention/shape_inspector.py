@@ -1,7 +1,7 @@
 """
 ========================================================================================
-Modul: PyTorch Shape Inspector & Live Forward Pass
-Responsabil: Cuclea Luca-Nicolae & Gheorghe Bogdan-Alexandru (Coder)
+Module: PyTorch Shape Inspector & Live Forward Pass
+Author: Cuclea Luca-Nicolae & Gheorghe Bogdan-Alexandru (Coder)
 ========================================================================================
 """
 
@@ -62,15 +62,15 @@ def render_shape_inspector():
         f_heads = st.selectbox("num_heads (h)", options=[2, 4, 8, 16], index=2)
         
     f_dk = f_dmodel // f_heads
-    st.caption(f"Dimensiunea fiecărui cap individual ($d_k = d_{{model}} / h$): **{f_dk}**")
+    st.caption(f"Dimension of each individual attention head ($d_k = d_{{model}} / h$): **{f_dk}**")
     
-    if st.button("🚀 Execută Forward Pass Live pe GPU/CPU", type="primary"):
+    if st.button("🚀 Run Live Forward Pass on GPU/CPU", type="primary"):
         model = MultiHeadAttention(d_model=f_dmodel, num_heads=f_heads)
         x = torch.randn(f_batch, f_seq, f_dmodel)
         
         output, weights = model(x, x, x)
         
-        st.success("✅ Forward Pass finalizat cu succes fără erori!")
+        st.success("✅ Forward Pass completed successfully with zero errors!")
         
         s1, s2, s3 = st.columns(3)
         with s1:
@@ -84,7 +84,7 @@ def render_shape_inspector():
             st.code(f"{list(output.shape)}\n[Batch, Seq_Len, d_model]")
             
         st.info(f"""
-        **Ce observăm la nivel hardware:**
-        - Matricea de ponderi `weights` conține exact **{f_batch * f_heads}** matrici paralele de dimensiune `{f_seq} x {f_seq}`.
-        - Deoarece dimensiunea capului `h` este permutată înainte cu `.transpose(1, 2)`, toate cele {f_heads} capete au fost procesate ca un singur batch paralel!
+        **Hardware-Level Insights:**
+        - The attention weights tensor `weights` contains exactly **{f_batch * f_heads}** parallel matrices of dimension `{f_seq} x {f_seq}`.
+        - Because the head dimension `h` is permuted forward with `.transpose(1, 2)`, all {f_heads} attention heads are computed simultaneously as a single batched matrix multiplication!
         """)
