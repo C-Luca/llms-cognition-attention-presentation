@@ -11,7 +11,7 @@ from sections.code.other_attention.sliding_window import render_sliding_window
 if __name__ == "__main__":
     st.set_page_config(
         page_title="Attention Mechanisms: Causal vs. Sliding Window",
-        page_icon="⚡",
+        page_icon=None,
         layout="wide",
         initial_sidebar_state="collapsed",
     )
