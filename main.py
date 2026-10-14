@@ -19,7 +19,13 @@ if BASE_DIR not in sys.path:
 # Importuri modulare din fișiere separate
 from sections.problem_framing import render_problem_framing
 from sections.methodology import render_methodology
-from sections.results import render_results
+
+from sections.results.experimental_setup import render_experimental_setup
+from sections.results.complexity_analysis import render_complexity_analysis
+from sections.results.machine_translation import render_machine_translation
+from sections.results.model_variations import render_model_variations
+from sections.results.discussion_conclusion import render_discussion_conclusion
+from sections.results.swa_paper import render_swa_paper
 
 from sections.code.classic_attention.code_paradigms import render_code_paradigms
 from sections.code.classic_attention.scaled_dot import render_scaled_dot
@@ -90,10 +96,29 @@ with main_me:
 
 # 4. Results (Roman)
 with main_res:
-    try:
-        render_results()
-    except Exception as e:
-        st.error(f"Error in Results module: {e}")
+    # NIVEL 2: SUBMENIURI SUB RESULTS
+    (res_setup, res_complexity, res_mt, res_variations, res_discussion, res_swa) = st.tabs([
+        "🧪 Experimental Setup",
+        "⏱️ Complexity Analysis",
+        "🌍 Machine Translation",
+        "🔬 Model Variations",
+        "🏁 Discussion & Conclusion",
+        "🌊 Sliding-Window vs Linear Attention (2026)"
+    ])
+
+    for tab, render, name in [
+        (res_setup, render_experimental_setup, "Experimental Setup"),
+        (res_complexity, render_complexity_analysis, "Complexity Analysis"),
+        (res_mt, render_machine_translation, "Machine Translation"),
+        (res_variations, render_model_variations, "Model Variations"),
+        (res_discussion, render_discussion_conclusion, "Discussion & Conclusion"),
+        (res_swa, render_swa_paper, "Sliding-Window vs Linear Attention"),
+    ]:
+        with tab:
+            try:
+                render()
+            except Exception as e:
+                st.error(f"Error in Results module ({name}): {e}")
 
 # 3. Code (Cuclea Luca & Bogdan)
 with main_code:
