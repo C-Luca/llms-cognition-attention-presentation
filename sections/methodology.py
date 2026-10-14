@@ -76,10 +76,10 @@ def _tok(text: str, fallback: str, limit: int = 14) -> list[str]:
 PROVENANCE = [
     ("Figure 1", "Architecture diagram", "§3", "Drawn by the authors; no data", "A · ①"),
     ("Figure 2", "Scaled dot-product & multi-head attention", "§3.2", "Drawn by the authors; no data", "A · ②"),
-    ("Table 1", "Cost of self-attention vs RNN vs CNN layers", "§4", "Analytical big-O, not measured", "Problem Framing"),
-    ("Table 2", "BLEU on newstest2014 + training cost", "§6.1", "Test set; checkpoint-averaged base & big models; cost = time × GPUs × TFLOPS; other rows copied from earlier papers", "B · ⑧ (setup) / Results"),
-    ("Table 3", "Model variations (ablations)", "§6.2", "Dev set newstest2013; EN→DE; no checkpoint averaging; one change at a time vs base", "B · ⑨"),
-    ("Table 4", "English constituency parsing F1", "§6.3", "WSJ Section 23; 4-layer model; WSJ-only and semi-supervised", "B · ⑩ (setup) / Results"),
+    ("Table 1", "Cost of self-attention vs RNN vs CNN layers", "§4", "Analytical big-O, not measured", "Problem Framing · Results › Complexity"),
+    ("Table 2", "BLEU on newstest2014 + training cost", "§6.1", "Test set; checkpoint-averaged base & big models; cost = time × GPUs × TFLOPS; other rows copied from earlier papers", "B · ⑧ (how) · Results › Machine Translation (numbers)"),
+    ("Table 3", "Model variations (ablations)", "§6.2", "Dev set newstest2013; EN→DE; no checkpoint averaging; one change at a time vs base", "B · ⑨ (how) · Results › Model Variations (numbers)"),
+    ("Table 4", "English constituency parsing F1", "§6.3", "WSJ Section 23; 4-layer model; WSJ-only and semi-supervised", "B · ⑩"),
     ("Figures 3–5", "Attention weight visualisations", "Appendix", "Encoder self-attention, layer 5 of 6, trained EN→DE model, one sentence each", "A · ④"),
 ]
 
@@ -92,7 +92,7 @@ PIPELINE = [
     "8 × P100 · 12 h / 3.5 days",
     "Checkpoint averaging",
     "Beam search (k=4, α=0.6)",
-    "BLEU",
+    "BLEU (Results)",
 ]
 
 
@@ -605,11 +605,9 @@ A = out.attentions[4]        # layer 5 -> tensor (batch, heads, n, n), each row 
 # ----------------------------------------------------------------------------------------
 # ⑤ Data & batching
 # ----------------------------------------------------------------------------------------
-DATASETS = [
-    ("WMT 2014 English→German", "≈ 4.5M sentence pairs", "Byte-pair encoding (BPE)", "≈ 37,000 tokens, shared source + target", "newstest2013 (dev) / newstest2014 (test)"),
-    ("WMT 2014 English→French", "36M sentences", "Word-pieces", "32,000 tokens", "newstest2014 (test)"),
-    ("WSJ Penn Treebank (parsing)", "≈ 40k sentences", "—", "16,000 tokens", "Section 22 (dev) / Section 23 (test)"),
-    ("WSJ + high-confidence & BerkeleyParser corpora", "≈ 17M sentences", "—", "32,000 tokens", "Section 22 (dev) / Section 23 (test)"),
+TOKENISATION = [
+    ("WMT 2014 English→German", "Byte-pair encoding (BPE)", "≈ 37,000 tokens, shared by source and target"),
+    ("WMT 2014 English→French", "Word-pieces", "32,000 tokens"),
 ]
 
 BPE_CORPUS = {"l o w </w>": 5, "l o w e r </w>": 2, "n e w e s t </w>": 6, "w i d e s t </w>": 3}
@@ -680,10 +678,11 @@ def _padding_ratio(batches: list[np.ndarray]) -> float:
 
 def _render_data() -> None:
     _owner("B")
-    st.subheader("Training data and batching (§5.1)")
-    st.dataframe(pd.DataFrame(DATASETS, columns=["Dataset", "Size", "Tokenisation", "Vocabulary", "Dev / test"]),
+    st.subheader("From raw sentence pairs to training batches (§5.1)")
+    st.markdown("Two preparation steps sit between the WMT 2014 corpora and the model: **tokenisation** into subword units and **batching** by length.")
+    st.caption("The datasets themselves (WMT shared task, corpus sizes, dev/test splits, real sentence pairs): **Results › Experimental Setup**.")
+    st.dataframe(pd.DataFrame(TOKENISATION, columns=["Dataset", "Tokenisation", "Vocabulary"]),
                  use_container_width=True, hide_index=True)
-    st.caption("WMT = Workshop on Machine Translation shared task; newstestYYYY = news articles translated by professionals, used only for evaluation.")
 
     st.markdown("#### Byte-pair encoding: how a 37k vocabulary is built")
     st.markdown("Start from characters, then repeatedly **merge the most frequent adjacent pair**. "
@@ -735,7 +734,7 @@ def _render_data() -> None:
     st.caption("Simulation: 20,000 synthetic sentence lengths (log-normal, median ≈ 22 tokens), not WMT data. The paper does not report its padding rate.")
 
     _speaker_notes(
-        "- Two translation datasets, very different sizes: 4.5M vs 36M pairs. EN→DE is the main benchmark; all ablations use it.\n"
+        "- Don't re-introduce WMT; Roman presents the datasets. Start from: how do sentence pairs become model input?\n"
         "- BPE demo: move the slider; frequent pieces like 'est</w>' get merged first. Show that 'lowest' becomes known pieces even though it's not in the corpus.\n"
         "- Shared EN–DE vocabulary is what allows the three-way weight tying from tab ③.\n"
         "- Batching demo: random batching wastes a large share of compute on padding; sorting by length almost eliminates it. "
@@ -854,13 +853,12 @@ def _render_regularization() -> None:
         st.plotly_chart(fig, use_container_width=True)
     st.caption("Remaining probability spread evenly over the other K−1 tokens. With smoothing the model is penalised for being 100% sure, "
                "so perplexity (measured against the real one-hot labels) gets worse, while calibrated, less over-confident scores help beam search.")
-    st.info("Evidence in the paper — Table 3, row (D): ε_ls = 0 gives **better** perplexity (4.67 vs 4.92) but **worse** BLEU (25.3 vs 25.8). "
-            "Dropout 0.0 → BLEU 24.6: dropout matters most.")
+    st.caption("The paper's evidence for this trade-off is Table 3, row (D): **Results › Model Variations**.")
 
     _speaker_notes(
         "- Dropout: placed right before each residual addition, and on embeddings + positions. 0.1 for base, 0.3 for big EN→DE.\n"
         "- Label smoothing: move ε. The orange curve has its minimum before p = 1, so the model is trained never to be fully sure.\n"
-        "- That is exactly why perplexity gets worse and BLEU better — and Table 3 row (D) confirms both directions.\n"
+        "- That is exactly why perplexity gets worse and BLEU better. Roman shows the numbers (Table 3, row D).\n"
         "- Bridge: *\"Training gives us a set of weights. How do we turn them into a translation and a score?\"*"
     )
 
@@ -868,13 +866,10 @@ def _render_regularization() -> None:
 # ----------------------------------------------------------------------------------------
 # ⑧ Decoding & evaluation protocol
 # ----------------------------------------------------------------------------------------
-GPUS = {"K80": 2.8, "K40": 3.7, "M40": 6.0, "P100": 9.5}
-
-
 def _render_decoding() -> None:
     _owner("B")
-    st.subheader("From trained weights to a BLEU score (§6.1)")
-    st.markdown(_chips(["Checkpoint averaging", "Beam search (k = 4, α = 0.6)", "Max length = input + 50", "BLEU on newstest2014"], GREEN),
+    st.subheader("From trained weights to a translation (§6.1)")
+    st.markdown(_chips(["Checkpoint averaging", "Beam search (k = 4, α = 0.6)", "Max length = input + 50", "→ scored with BLEU (Results)"], GREEN),
                 unsafe_allow_html=True)
 
     st.markdown("#### 1 · Checkpoint averaging")
@@ -909,28 +904,13 @@ def _render_decoding() -> None:
     st.caption("At α = 0 the short hypothesis wins; at the paper's α = 0.6 the longer, more complete one wins. "
                "k = 4 and α = 0.6 were chosen on the development set. Output length is capped at input length + 50.")
 
-    st.markdown("#### 3 · BLEU")
-    st.markdown("BLEU compares the output with a professional reference translation: the geometric mean of 1- to 4-gram precisions, "
-                "times a brevity penalty for outputs shorter than the reference. Scale 0–100; on newstest2014 EN→DE, +1 BLEU was considered a large gain.")
-
-    st.markdown("#### 4 · The 'Training cost' column of Table 2")
-    st.markdown("Not measured — **estimated** as *training time × number of GPUs × sustained single-precision TFLOPS per GPU* (footnote 5).")
-    c1, c2, c3, c4 = st.columns(4)
-    preset = c1.radio("Preset", ["Base", "Big"], horizontal=True, key="me_cost_p")
-    gpu = c2.selectbox("GPU", list(GPUS.keys()), index=3, key="me_cost_gpu")
-    n_gpu = c3.number_input("GPUs", 1, 128, 8, key="me_cost_n")
-    hrs = c4.number_input("Hours", 1.0, 2000.0, 12.0 if preset == "Base" else 84.0, key=f"me_cost_h_{preset}")
-    flops = hrs * 3600 * n_gpu * GPUS[gpu] * 1e12
-    st.metric("Estimated training FLOPs", f"{flops:.2e}")
-    st.caption("Paper, Table 2: base 3.3 · 10¹⁸, big 2.3 · 10¹⁹. Assumed TFLOPS: K80 2.8, K40 3.7, M40 6.0, P100 9.5. "
-               "Costs of competing models were computed the same way from their papers' reported times and GPUs.")
+    st.caption("How BLEU, perplexity and the training-cost (FLOPs) column are computed, with live calculators: **Results › Experimental Setup › Metrics** and **Results › Machine Translation › Quality vs Cost**.")
 
     _speaker_notes(
-        "- Four steps between training and the number in Table 2. Each one is a methodological choice.\n"
+        "- Three decoding choices sit between training and the number in Table 2. Each one is a methodological choice.\n"
         "- Checkpoint averaging: free ensemble-like smoothing. Important: Table 3 does **not** use it, so Table 3 numbers are lower than Table 2.\n"
         "- Length penalty demo: at α = 0 the short hypothesis wins; at 0.6 the long one wins.\n"
-        "- Training cost: show that 12 h × 8 × 9.5 TFLOPS gives 3.3e18 — the column is an upper-bound estimate, not a measurement.\n"
-        "- Results themselves: Roman's tab.\n"
+        "- Stop at the translation: BLEU, perplexity and training cost are explained in Roman's Results section.\n"
         "- Bridge: *\"How do we know which design choices matter? Table 3.\"*"
     )
 
@@ -961,13 +941,14 @@ TABLE_3 = [
     ("E", "learned positional embedding", 6, 512, 2048, 8, 64, 64, 0.1, 0.1, "100K", 4.92, 25.7, None),
     ("big", "big", 6, 1024, 4096, 16, 64, 64, 0.3, 0.1, "300K", 4.33, 26.4, 213),
 ]
-GROUP_TEXT = {
-    "A": "**Heads vs head size, compute held constant.** One head is 0.9 BLEU worse than the best; too many heads (32 × 16 dims) also hurts.",
-    "B": "**Smaller keys hurt.** *\"Determining compatibility is not easy\"* — a richer compatibility function than the dot product might help.",
-    "C": "**Bigger is better.** More layers, wider d_model and wider d_ff all improve dev perplexity and BLEU.",
-    "D": "**Regularisation matters.** No dropout: −1.2 BLEU. No label smoothing: better perplexity, worse BLEU (tab ⑦).",
-    "E": "**Sinusoids vs learned positions:** nearly identical (25.7 vs 25.8).",
-}
+ABLATION_DESIGN = [
+    ("A", "number of heads h and head size d_k = d_v", "d_model · total compute and parameters", "none: the cleanest comparison"),
+    ("B", "key size d_k only", "everything else", "fewer parameters (58M / 60M vs 65M)"),
+    ("C", "depth N, width d_model, FFN size d_ff", "the rest of the recipe", "parameters change from 28M to 168M"),
+    ("D", "dropout P_drop, label smoothing ε_ls", "architecture", "none"),
+    ("E", "learned instead of sinusoidal positions", "everything else", "none"),
+    ("big", "d_model, d_ff, h, P_drop and training steps at once", "—", "several changes at once: not an ablation"),
+]
 
 
 def _param_count(N, d, dff, h, dk, dv, V) -> dict[str, float]:
@@ -980,40 +961,21 @@ def _param_count(N, d, dff, h, dk, dv, V) -> dict[str, float]:
 
 def _render_ablations() -> None:
     _owner("B")
-    st.subheader("Table 3: what happens when you change one thing at a time (§6.2)")
+    st.subheader("Table 3: how the ablation study was run (§6.2)")
     st.markdown(
         "**Protocol:** base EN→DE model, change one (group of) hyper-parameter(s), train 100k steps, evaluate on the **development set newstest2013** "
         "with beam search as in §6.1 but **without checkpoint averaging**. Perplexity is per word-piece (BPE token), so it is not comparable to per-word perplexities."
     )
 
+    st.caption("The numbers themselves (BLEU and perplexity per row, with charts and interpretation): **Results › Model Variations**.")
+
+    st.markdown("#### How the experiment is designed")
+    st.dataframe(pd.DataFrame(ABLATION_DESIGN, columns=["Row group", "What is varied", "What is held fixed", "Confound"]),
+                 use_container_width=True, hide_index=True)
+    st.caption("Every row is one model trained from scratch for 100k steps (big: 300k), then decoded once on newstest2013.")
+
     df = pd.DataFrame(TABLE_3, columns=["Group", "Change", "N", "d_model", "d_ff", "h", "d_k", "d_v", "P_drop", "ε_ls", "Steps",
                                         "PPL (dev)", "BLEU (dev)", "Params ×10⁶"])
-    group = st.radio("Row group", ["All", "A", "B", "C", "D", "E"], horizontal=True, key="me_t3_group")
-    view = df if group == "All" else df[df["Group"].isin(["base", group])]
-    shown = view.drop(columns=["Group"]).copy()
-    shown["Params ×10⁶"] = ["" if pd.isna(v) else f"{v:.0f}" for v in shown["Params ×10⁶"]]
-    st.dataframe(shown, use_container_width=True, hide_index=True)
-    if group in GROUP_TEXT:
-        st.info(GROUP_TEXT[group])
-
-    plot_df = view.copy()
-    plot_df["label"] = [c if g in ("base", "big") else f"{g}: {c}" for g, c in zip(plot_df["Group"], plot_df["Change"])]
-    colors = [AMBER if g == "base" else (INDIGO if g == "big" else BLUE) for g in plot_df["Group"]]
-    l, r = st.columns(2)
-    with l:
-        fig = go.Figure(go.Bar(y=plot_df["label"], x=plot_df["BLEU (dev)"], orientation="h", marker_color=colors,
-                               text=plot_df["BLEU (dev)"], textposition="outside", cliponaxis=False))
-        fig.add_vline(x=25.8, line=dict(color=AMBER, dash="dot"))
-        fig.update_layout(height=120 + 26 * len(plot_df), margin=dict(l=10, r=30, t=30, b=10), xaxis=dict(range=[23, 27]),
-                          yaxis=dict(autorange="reversed"), title="BLEU on dev (higher = better; dotted = base)")
-        st.plotly_chart(fig, use_container_width=True)
-    with r:
-        fig = go.Figure(go.Bar(y=plot_df["label"], x=plot_df["PPL (dev)"], orientation="h", marker_color=colors,
-                               text=plot_df["PPL (dev)"], textposition="outside", cliponaxis=False))
-        fig.add_vline(x=4.92, line=dict(color=AMBER, dash="dot"))
-        fig.update_layout(height=120 + 26 * len(plot_df), margin=dict(l=10, r=30, t=30, b=10), xaxis=dict(range=[4, 6.4]),
-                          yaxis=dict(autorange="reversed", showticklabels=False), title="Perplexity on dev (lower = better)")
-        st.plotly_chart(fig, use_container_width=True)
 
     st.markdown("#### How the 'Params' column is generated")
     st.markdown("Parameters follow directly from the hyper-parameters. Pick a configuration and compare our count with the paper's:")
@@ -1048,7 +1010,7 @@ def _render_ablations() -> None:
 
     _speaker_notes(
         "- Explain the protocol first: dev set, no checkpoint averaging. That's why base scores 25.8 here and 27.3 in Table 2.\n"
-        "- Go group by group with the radio buttons; each group answers one design question (heads, key size, size, regularisation, positions).\n"
+        "- Design table: each group answers one design question; only (A) is a clean, compute-matched comparison. Roman presents what each row scored.\n"
         "- Params demo: pick 'base' → ~63M vs 65M; pick 'big' → ~214M vs 213M. The column is computed, not measured.\n"
         "- End with the critical reading: one run each, no error bars. Strong conclusions only for large gaps (N=2, no dropout, h=1).\n"
         "- Bridge: *\"Last: does the model work beyond translation?\"*"
@@ -1092,37 +1054,17 @@ def _render_beyond() -> None:
             st.markdown(
                 "Only a *small number of experiments* on the Section 22 dev set, to select dropout (attention and residual), learning rates and beam size. "
                 "**All other parameters stayed as in the EN→DE base model.** Evaluation: F1 on Section 23. "
-                "This light tuning is the point: the same recipe transfers to a different task. Results → Results tab."
+                "This light tuning is the point: the same recipe transfers to a different task."
             )
 
     st.divider()
-    st.subheader("The 2026 follow-up: how 'Sliding-Window Beats Linear Attention' ran its experiments")
+    st.subheader("The 2026 follow-up: where its numbers come from")
     st.markdown(
-        "**Question:** to cut the memory of a long KV cache in an existing LLM, is it better to *retrofit* it to linear attention "
-        "(extra training) or just switch to **sliding-window attention (SWA) with attention sinks** (no training)? "
-        "The mechanism itself is shown in **Code → Other Types Of Attention**; here: the experimental design."
+        "The research question, the compared methods, the benchmarks and the *recovery* metric are presented in **Results › Sliding-Window vs Linear Attention (2026)**; "
+        "the mechanism in **Code › Other Types Of Attention**. Here we only check **where its numbers come from** and how much to trust them."
     )
-    c1, c2, c3 = st.columns(3)
-    with c1:
-        with st.container(border=True):
-            st.markdown("**Compared**")
-            st.markdown("- Teacher (original model, full attention)\n- SWA with window 64 + 4 sinks (main), plus windows 128–512\n"
-                        "- Retrofitted linear attention: SUPRA, Hedgehog, LoLCATs, Liger-GLA, MOHAWK, Mamba-in-Llama, DiJiang, ARWKV, Llamba, QRWKV6/7 …\n"
-                        "- Hybrids with full-attention layers excluded")
-    with c2:
-        with st.container(border=True):
-            st.markdown("**Models**")
-            st.markdown("1.3B → 72B: Phi-1.5, Mistral-7B, Llama-2-7B, Llama-3/3.1-8B (+70B), Qwen2.5-7B/32B/72B, QwQ-32B. "
-                        "Own retrofits of Qwen3-8B and Phi-4 reasoning models (~0.1B tokens of Alpaca).")
-    with c3:
-        with st.container(border=True):
-            st.markdown("**Benchmarks & metrics**")
-            st.markdown("- Short context (log-likelihood): MMLU, ARC-C/E, HellaSwag, PIQA, WinoGrande\n"
-                        "- Generative: GSM8K (exact match), HumanEval (pass@1)\n"
-                        "- Long context: Needle-in-a-Haystack, BABILong, LongBench(-v2), RULER up to 16K\n"
-                        "- **Recovery** = student score ÷ teacher score")
-    st.markdown("**Speed & memory:** a 4-layer Transformer (embedding 1024, 16 heads × 64), batch 1, float16, one RTX PRO 6000 Blackwell GPU, "
-                "contexts 128 → 256K tokens; FlashAttention for full attention and SWA, ThunderKittens for linear attention.")
+    st.markdown("**Measurement setup for speed and memory:** a 4-layer Transformer (embedding 1024, 16 heads × 64), batch 1, float16, one RTX PRO 6000 Blackwell GPU; "
+                "FlashAttention for full attention and SWA, ThunderKittens for linear attention. Different kernels per method are part of the comparison.")
 
     st.markdown("#### Where each of its figures and tables comes from")
     st.dataframe(pd.DataFrame(SWA_PROVENANCE, columns=["Item", "Shows", "Source of the numbers"]), use_container_width=True, hide_index=True)
@@ -1140,7 +1082,7 @@ def _render_beyond() -> None:
 
     _speaker_notes(
         "- Parsing: emphasise how little was tuned; the claim is about **transfer of the recipe**.\n"
-        "- 2026 paper: frame it as the same methodological questions applied to a new problem — which models, which baselines, which metrics, whose numbers.\n"
+        "- 2026 paper: Roman presents what was compared and the scores. We only ask: whose numbers are these, and are the rows comparable?\n"
         "- The provenance table is the critical slide: some rows are measured by the authors, others copied.\n"
         "- Close the loop: the 'restricted attention' row of the 2017 Table 1 is exactly SWA.\n"
         "- Hand over to the Code section / Results."
