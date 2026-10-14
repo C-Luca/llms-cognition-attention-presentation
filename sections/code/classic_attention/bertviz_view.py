@@ -34,16 +34,16 @@ def render_bertviz_view():
     selected_view = st.radio(
         "Select Multiscale Attention View:",
         [
-            "👁️ 1. Head View (Bipartite Token Graph & Head Specialization)",
-            "🌐 2. Model View (Bird's-Eye Grid across all 144 Attention Heads)",
-            "🔬 3. Neuron View (Microscopic Query-Key Dot Product Tracing)"
+            "1. Head View (Bipartite Token Graph & Head Specialization)",
+            "2. Model View (Bird's-Eye Grid across all 144 Attention Heads)",
+            "3. Neuron View (Microscopic Query-Key Dot Product Tracing)"
         ],
         horizontal=True
     )
 
     st.divider()
 
-    if selected_view.startswith("👁️ 1."):
+    if selected_view.startswith("1."):
         col_view, col_info = st.columns([3, 2])
         with col_view:
             st.subheader("1. Head View (Single Layer)")
@@ -52,7 +52,7 @@ def render_bertviz_view():
             components.html(html_content, height=520, scrolling=True)
             
         with col_info:
-            st.markdown("### 📊 Presentation & Architectural Guide")
+            st.markdown("### Presentation & Architectural Guide")
             st.markdown("""
             **What the visualization displays:**
             - Connects each Query token (left) to each Key token (right).
@@ -70,7 +70,7 @@ def render_bertviz_view():
                - *Hover* over `cat` or `mat` to highlight incoming and outgoing attention paths.
             """)
 
-    elif selected_view.startswith("🌐 2."):
+    elif selected_view.startswith("2."):
         col_view, col_info = st.columns([3, 2])
         with col_view:
             st.subheader("2. Model View (Global 12x12 Grid)")
@@ -79,7 +79,7 @@ def render_bertviz_view():
             components.html(html_content, height=620, scrolling=True)
             
         with col_info:
-            st.markdown("### 📊 Presentation & Architectural Guide")
+            st.markdown("### Presentation & Architectural Guide")
             st.markdown(r"""
             **What the visualization displays:**
             - A full macroscopic grid of all **144 attention heads** ($12 \text{ layers} \times 12 \text{ heads}$).
@@ -105,7 +105,7 @@ def render_bertviz_view():
             components.html(html_content, height=620, scrolling=True)
             
         with col_info:
-            st.markdown("### 📊 Presentation & Architectural Guide")
+            st.markdown("### Presentation & Architectural Guide")
             st.markdown(r"""
             **What the visualization displays:**
             - Traces the exact computation from individual neuron activations ($d_k = 64$) up to the final softmax score.

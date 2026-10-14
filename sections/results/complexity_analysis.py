@@ -116,9 +116,7 @@ def _render_table() -> None:
 # Entry point
 # ----------------------------------------------------------------------------------------
 def render_complexity_analysis():
-    st.header("Complexity Analysis")
-
-    tabs = st.tabs(["📐 Comparison Criteria", "🧮 Complexities Comparison"])
+    tabs = st.tabs(["Comparison Criteria", "Complexities Comparison"])
     for tab, render in zip(tabs, [_render_criteria, _render_table]):
         with tab:
             render()

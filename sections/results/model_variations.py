@@ -133,8 +133,5 @@ def _render_table_and_chart(df) -> None:
 
 
 def render_model_variations():
-    st.header("Model Variations: what is the Transformer made of?")
-    st.caption("Ablation study on the English-to-German development set: perplexity and BLEU when one component is changed.")
-
     df = table_3_df()
     _render_table_and_chart(df)

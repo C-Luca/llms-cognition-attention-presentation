@@ -292,10 +292,7 @@ def _render_metrics() -> None:
 # Entry point
 # ----------------------------------------------------------------------------------------
 def render_experimental_setup():
-    st.header("Experimental Setup: how the results were produced")
-    st.caption("Datasets, metrics (BLEU, perplexity, FLOPs) and the training recipe behind every number that follows.")
-
-    tabs = st.tabs(["📔 Benchmark", "🗂️ Data", "📏 Metrics: BLEU & Co."])
+    tabs = st.tabs(["Benchmark", "Data", "Metrics: BLEU & Co."])
     for tab, render in zip(tabs, [_render_benchmark, _render_data, _render_metrics]):
         with tab:
             render()

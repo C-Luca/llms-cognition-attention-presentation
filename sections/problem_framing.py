@@ -45,8 +45,7 @@ def _chips(tokens: list[str], states: list[str]) -> str:
 
 
 def _speaker_notes(text: str) -> None:
-    with st.expander("🎤 Speaker notes"):
-        st.markdown(text)
+    pass
 
 
 # ----------------------------------------------------------------------------------------
@@ -408,7 +407,7 @@ def _render_gap_and_bet() -> None:
     g2.markdown("**Short paths**  \nany two words linked in one step")
     g3.markdown("**Word order kept**  \nwithout reading in sequence")
 
-    st.info("➡️ How each ingredient works is next, in the **Methodology** tab.")
+    st.info("How each ingredient works is next, in the **Methodology** tab.")
 
     _speaker_notes(
         "- Read the quote: this is the paper's exact novelty claim.\n"
@@ -422,16 +421,13 @@ def _render_gap_and_bet() -> None:
 # Entry point
 # ----------------------------------------------------------------------------------------
 def render_problem_framing():
-    st.header("Problem Framing")
-    st.caption("Why the Transformer was needed: the problem, what existed before, and the gap the paper fills. ≈10 min.")
-
     tabs = st.tabs([
-        "① The Task",
-        "② The RNN Bottleneck",
-        "③ Attention Before 2017",
-        "④ The CNN Route",
-        "⑤ Comparing the Options",
-        "⑥ The Gap & The Bet",
+        "The Task",
+        "The RNN Bottleneck",
+        "Attention Before 2017",
+        "The CNN Route",
+        "Comparing the Options",
+        "The Gap & The Bet",
     ])
     renderers = [
         _render_task,

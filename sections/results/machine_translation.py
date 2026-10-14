@@ -166,11 +166,8 @@ def _render_quality_vs_cost(df: pd.DataFrame) -> None:
 # Entry point
 # ----------------------------------------------------------------------------------------
 def render_machine_translation():
-    st.header("Machine Translation Results")
-    st.caption("WMT 2014 English-to-German and English-to-French: translation quality (BLEU) and estimated training cost (FLOPs).")
-
     df = table_2_df()
-    tabs = st.tabs(["📋 BLEU Score Comparison", "💰 Quality vs Cost"])
+    tabs = st.tabs(["BLEU Score Comparison", "Quality vs Cost"])
     with tabs[0]:
         _render_table_and_bleu(df)
     with tabs[1]:

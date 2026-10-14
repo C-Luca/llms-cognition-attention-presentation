@@ -37,12 +37,11 @@ BASE = dict(N=6, d_model=512, d_ff=2048, h=8, d_k=64, d_v=64, p_drop=0.1, eps_ls
 # Small helpers
 # ----------------------------------------------------------------------------------------
 def _speaker_notes(text: str) -> None:
-    with st.expander("🎤 Speaker notes"):
-        st.markdown(text)
+    pass
 
 
 def _owner(part: str) -> None:
-    st.caption(f"Part {part} · presented by **{PRESENTERS[part]}**")
+    pass
 
 
 def _box(title: str, body: str, color: str = SLATE, bold: bool = False) -> str:
@@ -74,13 +73,13 @@ def _tok(text: str, fallback: str, limit: int = 14) -> list[str]:
 # ⓪ Overview: what the methodology consists of and where every figure/table comes from
 # ----------------------------------------------------------------------------------------
 PROVENANCE = [
-    ("Figure 1", "Architecture diagram", "§3", "Drawn by the authors; no data", "A · ①"),
-    ("Figure 2", "Scaled dot-product & multi-head attention", "§3.2", "Drawn by the authors; no data", "A · ②"),
+    ("Figure 1", "Architecture diagram", "§3", "Drawn by the authors; no data", "A · 1"),
+    ("Figure 2", "Scaled dot-product & multi-head attention", "§3.2", "Drawn by the authors; no data", "A · 2"),
     ("Table 1", "Cost of self-attention vs RNN vs CNN layers", "§4", "Analytical big-O, not measured", "Problem Framing · Results › Complexity"),
-    ("Table 2", "BLEU on newstest2014 + training cost", "§6.1", "Test set; checkpoint-averaged base & big models; cost = time × GPUs × TFLOPS; other rows copied from earlier papers", "B · ⑧ (how) · Results › Machine Translation (numbers)"),
-    ("Table 3", "Model variations (ablations)", "§6.2", "Dev set newstest2013; EN→DE; no checkpoint averaging; one change at a time vs base", "B · ⑨ (how) · Results › Model Variations (numbers)"),
-    ("Table 4", "English constituency parsing F1", "§6.3", "WSJ Section 23; 4-layer model; WSJ-only and semi-supervised", "B · ⑩"),
-    ("Figures 3–5", "Attention weight visualisations", "Appendix", "Encoder self-attention, layer 5 of 6, trained EN→DE model, one sentence each", "A · ④"),
+    ("Table 2", "BLEU on newstest2014 + training cost", "§6.1", "Test set; checkpoint-averaged base & big models; cost = time × GPUs × TFLOPS; other rows copied from earlier papers", "B · 8 (how) · Results › Machine Translation (numbers)"),
+    ("Table 3", "Model variations (ablations)", "§6.2", "Dev set newstest2013; EN→DE; no checkpoint averaging; one change at a time vs base", "B · 9 (how) · Results › Model Variations (numbers)"),
+    ("Table 4", "English constituency parsing F1", "§6.3", "WSJ Section 23; 4-layer model; WSJ-only and semi-supervised", "B · 10"),
+    ("Figures 3–5", "Attention weight visualisations", "Appendix", "Encoder self-attention, layer 5 of 6, trained EN→DE model, one sentence each", "A · 4"),
 ]
 
 PIPELINE = [
@@ -106,12 +105,12 @@ def _render_overview() -> None:
     c1, c2 = st.columns(2)
     with c1:
         with st.container(border=True):
-            st.markdown(f"**Part A · The model** — {PRESENTERS['A']}")
-            st.markdown("① Architecture (Fig. 1)  \n② Attention, three ways (Fig. 2)  \n③ Word order, embeddings, FFN  \n④ Reading the attention figures (Figs. 3–5)")
+            st.markdown("**The Model**")
+            st.markdown("Architecture (Fig. 1)  \nAttention, three ways (Fig. 2)  \nWord order, embeddings, FFN  \nReading the attention figures (Figs. 3–5)")
     with c2:
         with st.container(border=True):
-            st.markdown(f"**Part B · Training & experiments** — {PRESENTERS['B']}")
-            st.markdown("⑤ Data & batching  \n⑥ Optimizer, schedule, hardware  \n⑦ Regularization  \n⑧ Decoding & evaluation protocol  \n⑨ Model variations (Table 3)  \n⑩ Parsing setup + the 2026 paper's setup")
+            st.markdown("**Training & Experiments**")
+            st.markdown("Data & batching  \nOptimizer, schedule, hardware  \nRegularization  \nDecoding & evaluation protocol  \nModel variations (Table 3)  \nParsing setup + the 2026 paper's setup")
 
     st.markdown("#### The experimental pipeline, end to end")
     st.markdown(_chips(PIPELINE), unsafe_allow_html=True)
@@ -121,7 +120,7 @@ def _render_overview() -> None:
     st.dataframe(df, use_container_width=True, hide_index=True)
     st.caption("A methodology expert should be able to answer, for each row: which data, which model, which split, which metric.")
 
-    with st.expander("📚 Sources used in this section"):
+    with st.expander("Sources used in this section"):
         st.markdown(
             "- Vaswani et al. (2017). *Attention Is All You Need.* [arXiv:1706.03762](https://arxiv.org/abs/1706.03762)\n"
             "- Jay Alammar. *The Illustrated Transformer.* [jalammar.github.io](https://jalammar.github.io/illustrated-transformer/)\n"
@@ -223,7 +222,7 @@ def _render_architecture() -> None:
             ),
             "pe": (
                 "Attention has no notion of order, so a fixed sinusoidal vector is **added** (not concatenated) to every embedding. "
-                "Details in tab ③.",
+                "Details in tab Word Order.",
                 r"h_i^{(0)} = x_i + PE_i",
                 f"({B}, {n}, {d}) + ({n}, {d}) → ({B}, {n}, {d})",
             ),
@@ -1093,23 +1092,18 @@ def _render_beyond() -> None:
 # Entry point
 # ----------------------------------------------------------------------------------------
 def render_methodology():
-    st.header("Methodology")
-    st.caption(
-        f"How the Transformer is built (Part A · {PRESENTERS['A']}) and how it was trained and evaluated (Part B · {PRESENTERS['B']}). ≈ 15 min."
-    )
-
     tabs = st.tabs([
-        "⓪ Overview",
-        "① Architecture",
-        "② Attention, Three Ways",
-        "③ Word Order",
-        "④ Attention Figures",
-        "⑤ Data & Batching",
-        "⑥ Optimizer & Schedule",
-        "⑦ Regularization",
-        "⑧ Decoding & Evaluation",
-        "⑨ Model Variations",
-        "⑩ Beyond Translation",
+        "Overview",
+        "Architecture",
+        "Attention, Three Ways",
+        "Word Order",
+        "Attention Figures",
+        "Data & Batching",
+        "Optimizer & Schedule",
+        "Regularization",
+        "Decoding & Evaluation",
+        "Model Variations",
+        "Beyond Translation",
     ])
     renderers = [
         _render_overview,

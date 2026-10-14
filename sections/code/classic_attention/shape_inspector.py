@@ -64,13 +64,13 @@ def render_shape_inspector():
     f_dk = f_dmodel // f_heads
     st.caption(f"Dimension of each individual attention head ($d_k = d_{{model}} / h$): **{f_dk}**")
     
-    if st.button("🚀 Run Live Forward Pass on GPU/CPU", type="primary"):
+    if st.button("Run Live Forward Pass on GPU/CPU", type="primary"):
         model = MultiHeadAttention(d_model=f_dmodel, num_heads=f_heads)
         x = torch.randn(f_batch, f_seq, f_dmodel)
         
         output, weights = model(x, x, x)
         
-        st.success("✅ Forward Pass completed successfully with zero errors!")
+        st.success("Forward Pass completed successfully with zero errors!")
         
         s1, s2, s3 = st.columns(3)
         with s1:

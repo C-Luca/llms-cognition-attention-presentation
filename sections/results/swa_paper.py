@@ -229,10 +229,7 @@ def _render_verdict() -> None:
 # Entry point
 # ----------------------------------------------------------------------------------------
 def render_swa_paper():
-    st.header("Sliding-Window Beats Linear Attention (2026): results")
-    st.caption("Jolicoeur-Martineau et al., arXiv 2608.28444v2. What was compared, the main results, and the speed and memory picture.")
-
-    tabs = st.tabs(["🎯 Setup & Metrics", "📚 Short Context", "🧵 Long Context", "⚡ Speed & Take-aways"])
+    tabs = st.tabs(["Setup & Metrics", "Short Context", "Long Context", "Speed & Take-aways"])
     for tab, render in zip(tabs, [_render_setup, _render_short, _render_long, _render_verdict]):
         with tab:
             render()

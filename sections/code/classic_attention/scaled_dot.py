@@ -46,7 +46,7 @@ def render_scaled_dot():
         st.metric(label="Variance after scaling (/ √d_k)", value=f"{var_scaled:.2f}")
         
         if not scale_toggle:
-            st.warning(f"⚠️ Without scaling, at d_k={d_k}, the variance reaches {var_raw:.1f}! The softmax saturates into extreme one-hot distributions (near 0 and 1), causing vanishing gradients!")
+            st.warning(f"Without scaling, at d_k={d_k}, the variance reaches {var_raw:.1f}! The softmax saturates into extreme one-hot distributions (near 0 and 1), causing vanishing gradients!")
 
     with col_plot:
         st.subheader("Resulting Attention Matrix (Interactive Heatmap)")

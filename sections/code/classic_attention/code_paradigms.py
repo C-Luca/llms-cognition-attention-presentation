@@ -117,16 +117,16 @@ def render_code_paradigms():
     code_paradigm = st.radio(
         "Select paradigm to inspect:",
         [
-            "🐍 1. Pure Python & NumPy (From Scratch - Explicit Mathematics)",
-            "🏛️ 2. Google Tensor2Tensor 2017 (TF 1.x Static Graph - Official Vaswani et al.)",
-            "⚡ 3. PyTorch 2.x & FlashAttention (Modern 2026 Production Standard)"
+            "1. Pure Python & NumPy (From Scratch - Explicit Mathematics)",
+            "2. Google Tensor2Tensor 2017 (TF 1.x Static Graph - Official Vaswani et al.)",
+            "3. PyTorch 2.x & FlashAttention (Modern 2026 Production Standard)"
         ],
         horizontal=True
     )
 
     st.divider()
 
-    if code_paradigm.startswith("🐍 1."):
+    if code_paradigm.startswith("1."):
         col_c1, col_c2 = st.columns([3, 2])
         with col_c1:
             st.subheader("1. Pure Python & NumPy (From Scratch)")
@@ -186,7 +186,7 @@ class PureNumpyMultiHeadAttention:
 """, language="python")
 
         with col_c2:
-            st.markdown("### 📊 Engineering Analysis")
+            st.markdown("### Engineering Analysis")
             st.markdown("""
             - **Lines of code:** ~45 lines.
             - **Dependencies:** Only `numpy` and `math`.
@@ -198,7 +198,7 @@ class PureNumpyMultiHeadAttention:
               - No autograd: backward pass must be derived and implemented manually for backpropagation.
             """)
 
-    elif code_paradigm.startswith("🏛️ 2."):
+    elif code_paradigm.startswith("2."):
         col_c1, col_c2 = st.columns([3, 2])
         with col_c1:
             st.subheader("2. Google Tensor2Tensor 2017 (TF 1.x)")
@@ -246,7 +246,7 @@ def tf1_multihead_attention(x, d_model=64, num_heads=4, is_causal=True):
 """, language="python")
 
         with col_c2:
-            st.markdown("### 📊 Engineering Analysis")
+            st.markdown("### Engineering Analysis")
             st.markdown(r"""
             - **Why is there no `forward()` method?**
               - **Define-and-Run Paradigm:** TF 1.x built a **static computational graph** (symbolic AST). Writing Python code did NOT execute math; it defined blueprint nodes in `tf.Graph()`.
@@ -294,7 +294,7 @@ class ModernFlashAttention(nn.Module):
 """, language="python")
 
         with col_c2:
-            st.markdown("### 📊 Engineering Analysis")
+            st.markdown("### Engineering Analysis")
             st.markdown(r"""
             - **Why is `forward()` here?**
               - **Define-by-Run Paradigm (Eager OOP):** PyTorch models inherit from `nn.Module`. Parameters live in `__init__()`, and computation is defined in `forward()`. Calling `model(x)` runs eagerly in Python!
@@ -309,7 +309,7 @@ class ModernFlashAttention(nn.Module):
     # LIVE NUMERICAL EQUIVALENCE BENCHMARK
     # --------------------------------------------------------------------------
     st.divider()
-    st.subheader("🧪 Live Numerical Equivalence Verification (NumPy vs. PyTorch)")
+    st.subheader("Live Numerical Equivalence Verification (NumPy vs. PyTorch)")
     st.markdown("""
     **The Ultimate Engineering Test:** Do our from-scratch NumPy implementation and PyTorch's native FlashAttention produce the **exact same output** when given the identical input tensor and identical projection weights?
     """)
@@ -318,7 +318,7 @@ class ModernFlashAttention(nn.Module):
     with col_btn:
         st.markdown("**Test Configuration:**")
         st.text("• Batch Size (B): 2\n• Seq Len (N): 5\n• d_model (D): 64\n• Heads (h): 4\n• Causal Mask: ENABLED")
-        run_equiv = st.button("🚀 Run Live Equivalence Test", type="primary", use_container_width=True)
+        run_equiv = st.button("Run Live Equivalence Test", type="primary", use_container_width=True)
 
     with col_res:
         if run_equiv:
@@ -347,7 +347,7 @@ class ModernFlashAttention(nn.Module):
             max_abs_diff = float(np.max(np.abs(out_np - out_pt_np)))
             is_identical = bool(np.allclose(out_np, out_pt_np, atol=1e-5))
 
-            st.success(f"✅ **Equivalence Confirmed! Numerical Difference: {max_abs_diff:.2e}**")
+            st.success(f"**Equivalence Confirmed! Numerical Difference: {max_abs_diff:.2e}**")
             
             c_m1, c_m2, c_m3 = st.columns(3)
             c_m1.metric("NumPy Output Shape", str(list(out_np.shape)))

@@ -22,10 +22,7 @@ FUTURE = [
 
 
 def render_discussion_conclusion():
-    st.header("Discussion & Conclusion")
-    st.caption("What the paper concludes, and what happened to the authors' plans.")
-
-    tabs = st.tabs(["🎯 Conclusion in Numbers", "🔭 Future Work: What Happened?"])
+    tabs = st.tabs(["Conclusion in Numbers", "Future Work: What Happened?"])
 
     # ---- 1
     with tabs[0]:
