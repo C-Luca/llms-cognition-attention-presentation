@@ -12,6 +12,9 @@ venv/
 ENV/
 env.bak/
 venv.bak/
+uv.lock
+pyproject.toml
+.python-version
 
 # Streamlit
 .streamlit/secrets.toml
